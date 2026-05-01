@@ -157,11 +157,11 @@ class PostResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label('Published'),
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkRecordActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
