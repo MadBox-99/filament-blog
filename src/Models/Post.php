@@ -4,10 +4,17 @@ namespace Madbox99\FilamentBlog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Madbox99\FilamentSeo\Models\SeoMeta;
 
 class Post extends Model
 {
     protected $guarded = [];
+
+    public function seoMeta(): MorphOne
+    {
+        return $this->morphOne(SeoMeta::class, 'seoable');
+    }
 
     #[\Override]
     public function getTable(): string
