@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables;
@@ -39,9 +40,9 @@ class PostResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Group::make()
+                Schemas\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Content')
+                        Schemas\Components\Section::make('Content')
                             ->schema([
                                 Forms\Components\TextInput::make('title')
                                     ->label('Title')
@@ -65,9 +66,9 @@ class PostResource extends Resource
                         ...static::seoFields(),
                     ])
                     ->columnSpan(['lg' => 2]),
-                Forms\Components\Group::make()
+                Schemas\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Publishing')
+                        Schemas\Components\Section::make('Publishing')
                             ->schema([
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published')
@@ -94,7 +95,7 @@ class PostResource extends Resource
                                     ->preload()
                                     ->default(auth()->id()),
                             ]),
-                        Forms\Components\Section::make('Image')
+                        Schemas\Components\Section::make('Image')
                             ->schema([
                                 Forms\Components\FileUpload::make('featured_image')
                                     ->label('Featured Image')
