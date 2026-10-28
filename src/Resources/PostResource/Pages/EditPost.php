@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Madbox99\FilamentBlog\Resources\PostResource\Pages;
 
 use Filament\Actions;
