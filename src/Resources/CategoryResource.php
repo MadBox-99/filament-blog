@@ -25,15 +25,31 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-folder';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Blog';
-
-    protected static ?string $navigationLabel = 'Categories';
-
-    protected static ?string $modelLabel = 'Category';
-
-    protected static ?string $pluralModelLabel = 'Categories';
-
     protected static ?int $navigationSort = 2;
+
+    #[\Override]
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return static::$navigationGroup ?? __('filament-blog::categories.navigation_group');
+    }
+
+    #[\Override]
+    public static function getNavigationLabel(): string
+    {
+        return static::$navigationLabel ?? __('filament-blog::categories.navigation_label');
+    }
+
+    #[\Override]
+    public static function getModelLabel(): string
+    {
+        return static::$modelLabel ?? __('filament-blog::categories.model_label');
+    }
+
+    #[\Override]
+    public static function getPluralModelLabel(): string
+    {
+        return static::$pluralModelLabel ?? __('filament-blog::categories.plural_model_label');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -42,21 +58,21 @@ class CategoryResource extends Resource
                 Schemas\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Name')
+                            ->label(__('filament-blog::categories.fields.name'))
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (Set $set, ?string $state): mixed => $set('slug', Str::slug($state ?? ''))),
                         Forms\Components\TextInput::make('slug')
-                            ->label('URL Slug')
+                            ->label(__('filament-blog::categories.fields.slug'))
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true),
                         Forms\Components\Toggle::make('is_active')
-                            ->label('Active')
+                            ->label(__('filament-blog::categories.fields.is_active'))
                             ->default(true),
                         Forms\Components\TextInput::make('sort_order')
-                            ->label('Sort Order')
+                            ->label(__('filament-blog::categories.fields.sort_order'))
                             ->numeric()
                             ->default(0),
                     ]),
@@ -70,18 +86,18 @@ class CategoryResource extends Resource
             ->defaultSort('sort_order')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('filament-blog::categories.columns.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('Slug'),
+                    ->label(__('filament-blog::categories.columns.slug')),
                 Tables\Columns\TextColumn::make('posts_count')
-                    ->label('Posts')
+                    ->label(__('filament-blog::categories.columns.posts_count'))
                     ->counts('posts'),
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('Active')
+                    ->label(__('filament-blog::categories.columns.is_active'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('filament-blog::categories.columns.created_at'))
                     ->dateTime('Y-m-d')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

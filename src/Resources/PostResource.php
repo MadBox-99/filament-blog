@@ -26,15 +26,31 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Blog';
-
-    protected static ?string $navigationLabel = 'Posts';
-
-    protected static ?string $modelLabel = 'Post';
-
-    protected static ?string $pluralModelLabel = 'Posts';
-
     protected static ?int $navigationSort = 1;
+
+    #[\Override]
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return static::$navigationGroup ?? __('filament-blog::posts.navigation_group');
+    }
+
+    #[\Override]
+    public static function getNavigationLabel(): string
+    {
+        return static::$navigationLabel ?? __('filament-blog::posts.navigation_label');
+    }
+
+    #[\Override]
+    public static function getModelLabel(): string
+    {
+        return static::$modelLabel ?? __('filament-blog::posts.model_label');
+    }
+
+    #[\Override]
+    public static function getPluralModelLabel(): string
+    {
+        return static::$pluralModelLabel ?? __('filament-blog::posts.plural_model_label');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -42,25 +58,25 @@ class PostResource extends Resource
             ->schema([
                 Schemas\Components\Group::make()
                     ->schema([
-                        Schemas\Components\Section::make('Content')
+                        Schemas\Components\Section::make(__('filament-blog::posts.sections.content'))
                             ->schema([
                                 Forms\Components\TextInput::make('title')
-                                    ->label('Title')
+                                    ->label(__('filament-blog::posts.fields.title'))
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Set $set, ?string $state): mixed => $set('slug', Str::slug($state ?? ''))),
                                 Forms\Components\TextInput::make('slug')
-                                    ->label('URL Slug')
+                                    ->label(__('filament-blog::posts.fields.slug'))
                                     ->required()
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\Textarea::make('excerpt')
-                                    ->label('Excerpt')
+                                    ->label(__('filament-blog::posts.fields.excerpt'))
                                     ->rows(3)
                                     ->maxLength(500),
                                 Forms\Components\RichEditor::make('content')
-                                    ->label('Content')
+                                    ->label(__('filament-blog::posts.fields.content'))
                                     ->columnSpanFull(),
                             ]),
                         ...static::seoFields(),
@@ -68,37 +84,37 @@ class PostResource extends Resource
                     ->columnSpan(['lg' => 2]),
                 Schemas\Components\Group::make()
                     ->schema([
-                        Schemas\Components\Section::make('Publishing')
+                        Schemas\Components\Section::make(__('filament-blog::posts.sections.publishing'))
                             ->schema([
                                 Forms\Components\Toggle::make('is_published')
-                                    ->label('Published')
+                                    ->label(__('filament-blog::posts.fields.is_published'))
                                     ->default(false),
                                 Forms\Components\DateTimePicker::make('published_at')
-                                    ->label('Publish Date'),
+                                    ->label(__('filament-blog::posts.fields.published_at')),
                                 Forms\Components\Select::make('category_id')
-                                    ->label('Category')
+                                    ->label(__('filament-blog::posts.fields.category'))
                                     ->relationship('category', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
                                         Forms\Components\TextInput::make('name')
-                                            ->label('Name')
+                                            ->label(__('filament-blog::posts.fields.category_name'))
                                             ->required(),
                                         Forms\Components\TextInput::make('slug')
-                                            ->label('Slug')
+                                            ->label(__('filament-blog::posts.fields.category_slug'))
                                             ->required(),
                                     ]),
                                 Forms\Components\Select::make('author_id')
-                                    ->label('Author')
+                                    ->label(__('filament-blog::posts.fields.author'))
                                     ->relationship('author', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->default(auth()->id()),
                             ]),
-                        Schemas\Components\Section::make('Image')
+                        Schemas\Components\Section::make(__('filament-blog::posts.sections.image'))
                             ->schema([
                                 Forms\Components\FileUpload::make('featured_image')
-                                    ->label('Featured Image')
+                                    ->label(__('filament-blog::posts.fields.featured_image'))
                                     ->image()
                                     ->directory('blog')
                                     ->imageResizeMode('cover')
@@ -126,27 +142,27 @@ class PostResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\ImageColumn::make('featured_image')
-                    ->label('Image')
+                    ->label(__('filament-blog::posts.columns.featured_image'))
                     ->circular(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Title')
+                    ->label(__('filament-blog::posts.columns.title'))
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label(__('filament-blog::posts.columns.category'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('author.name')
-                    ->label('Author')
+                    ->label(__('filament-blog::posts.columns.author'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_published')
-                    ->label('Published')
+                    ->label(__('filament-blog::posts.columns.is_published'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label('Published At')
+                    ->label(__('filament-blog::posts.columns.published_at'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('filament-blog::posts.columns.created_at'))
                     ->dateTime('Y-m-d')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -154,9 +170,9 @@ class PostResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('category')
                     ->relationship('category', 'name')
-                    ->label('Category'),
+                    ->label(__('filament-blog::posts.filters.category')),
                 Tables\Filters\TernaryFilter::make('is_published')
-                    ->label('Published'),
+                    ->label(__('filament-blog::posts.filters.is_published')),
             ])
             ->actions([
                 EditAction::make(),
